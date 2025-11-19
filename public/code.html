@@ -1,0 +1,28 @@
+<!doctype html><html><head>
+<meta charset='utf-8'/><meta name='viewport' content='width=device-width,initial-scale=1'/>
+<title>Link Stats</title>
+<style>
+body{font-family:Inter,Arial;padding:20px;background:#f5f6fa}
+.card{max-width:700px;margin:auto;background:#fff;padding:20px;border-radius:12px}
+.row{margin:10px 0;display:flex;justify-content:space-between}
+button{padding:8px 12px;background:#111;color:#fff;border:none;border-radius:6px;cursor:pointer}
+</style></head>
+<body><div class='card'>
+<h2 id='title'>Stats</h2><div id='stats'>Loading...</div><br/>
+<a href='/'><button>Back</button></a></div>
+<script>
+async function load(){
+ const code=location.pathname.split('/')[2];
+ document.getElementById('title').innerText='Stats — '+code;
+ const res=await fetch('/api/links/'+code);
+ if(res.status===404){document.getElementById('stats').innerHTML='<b>Not found</b>';return;}
+ const d=await res.json();
+ document.getElementById('stats').innerHTML=
+  '<div class=row><b>Short:</b><a href=/' + d.code + '>'+location.origin+'/'+d.code+'</a></div>'+
+  '<div class=row><b>URL:</b><a href='+d.target_url+'>'+d.target_url+'</a></div>'+
+  '<div class=row><b>Clicks:</b>'+d.clicks+'</div>'+
+  '<div class=row><b>Last:</b>'+(d.last_clicked||'—')+'</div>'+
+  '<div class=row><b>Created:</b>'+new Date(d.created_at).toLocaleString()+'</div>';
+}
+load();
+</script></body></html>
